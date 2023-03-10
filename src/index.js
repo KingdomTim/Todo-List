@@ -1,7 +1,14 @@
+import './style.css'
 
 function home() {
-    let hello = console.log('hello')
-    return hello
+    
+    const title = document.createElement('h2')
+    title.classList.add('title')
+    title.textContent = 'Inbox'
+
+    return title
 }
 
-document.body.appendChild(home())
+const mainPage = document.querySelector('.mainPage')
+
+mainPage.appendChild(home())

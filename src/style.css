@@ -1,0 +1,136 @@
+* {
+    margin: 0;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+
+.content {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    background-color: rgb(59, 121, 255);
+    padding: 15px;
+    box-shadow: 5px 10px;
+    color: white;
+    align-items: center;
+    gap: 20px;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+.clipboardIcon {
+    width: 30px;
+    height: 45px;
+    margin-bottom: 5px;;
+}
+
+.main {
+    background-color: white;
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(240, 240, 240);
+    padding: 30px;
+    font-size: 20px;
+    width: 185px;
+}
+
+.sideTop {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.inboxIcon,
+.todayIcon,
+.weekIcon {
+    width: 20px;
+    height: 20px;
+}
+
+.inbox,
+.today,
+.week,
+.addProject {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+
+.inbox:hover,
+.today:hover,
+.week:hover,
+.addProject:hover {
+    cursor: pointer;
+    background-color:rgb(194, 194, 194);
+    border-radius: 5px;
+}
+
+.sideBottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 50px;
+}
+
+.addProject {
+    display: flex;
+}
+
+.plusSign {
+    width: 21px;
+    height: 21px;
+}
+
+.addProjectText {
+    font-size: 20px;
+    margin-left: 4px;
+    
+}
+
+.mainPage {
+    display: flex;
+    padding: 20px;
+    justify-content: center;
+    width: 100%;
+}
+
+
+.footer {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    position:fixed;
+   left:0px;
+   bottom:0px;
+   height:30px;
+   width:100%;
+   background-color: rgb(59, 121, 255);
+   color: white;
+   padding: 10px;
+}
+
+
+.github {
+    margin-left: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.github:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+
