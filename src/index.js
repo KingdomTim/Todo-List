@@ -1,14 +1,5 @@
 import './style.css'
+import Task from './Modules/Task.js'
+import UI from './Modules/UI.js'
 
-function home() {
-    
-    const title = document.createElement('h2')
-    title.classList.add('title')
-    title.textContent = 'Inbox'
-
-    return title
-}
-
-const mainPage = document.querySelector('.mainPage')
-
-mainPage.appendChild(home())
+document.addEventListener('DOMContentLoaded', UI.addTask)

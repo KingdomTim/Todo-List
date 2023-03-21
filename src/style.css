@@ -50,14 +50,14 @@ h1 {
     gap: 10px;
 }
 
-.inboxIcon,
+.homeIcon,
 .todayIcon,
 .weekIcon {
     width: 20px;
     height: 20px;
 }
 
-.inbox,
+.home,
 .today,
 .week,
 .addProject {
@@ -67,7 +67,7 @@ h1 {
     gap: 10px;
 }
 
-.inbox:hover,
+.home:hover,
 .today:hover,
 .week:hover,
 .addProject:hover {
@@ -95,16 +95,15 @@ h1 {
 .addProjectText {
     font-size: 20px;
     margin-left: 4px;
-    
 }
 
 .mainPage {
     display: flex;
     padding: 20px;
-    justify-content: center;
+    flex-direction: column;
     width: 100%;
+    gap: 15px;
 }
-
 
 .footer {
     display:flex;
@@ -133,4 +132,78 @@ h1 {
     cursor: pointer;
 }
 
+.taskButton {
+    display: flex;
+    padding: 10px;
+    height: 20px;
+}
 
+.taskCreation {
+    display:flex;
+    background: color;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 200px;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: darkgrey;
+    justify-content: space-around;
+}
+
+.titleInput,
+.dateInput,
+.priorityInput,
+.submit {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.titleInput {
+    display: flex;
+    flex-direction: column;
+}
+
+.descriptionInput {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: green;
+}
+
+.leftSide {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+
+.rightSide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+td {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+table {
+    border-spacing: 0px;
+}
+
+.taskButton:hover {
+    background-color: gray;
+    cursor: pointer;
+    border-radius: 5px;
+}
