@@ -168,6 +168,11 @@ h1 {
     border-radius: 5px;
 }
 
+.dateInput {
+    width: 100px;
+    text-align: center;
+}
+
 .submit {
     display: flex;
     align-items: center;
@@ -206,4 +211,39 @@ table {
     background-color: gray;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.check {
+    width: 20px;
+    height: 20px;
+    border-radius: 15px;
+}
+
+.edit,
+.delete {
+    width: 20px;
+    height: 20px;
+}
+
+.check:hover,
+.edit:hover,
+.delete:hover {
+    cursor: pointer;
+    transform: scale(1.1)
+}
+
+.low {
+    background-color: greenyellow
+}
+
+.medium {
+    background-color: orange;
+}
+
+.urgent {
+    background-color: rgb(255, 68, 68)
+}
+
+.complete {
+    background-color: rgb(190,190,190)
 }
