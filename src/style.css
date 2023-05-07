@@ -113,6 +113,21 @@ h1 {
     gap: 15px;
 }
 
+.todayPage {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+.weekPage {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+
 .projectPage {
     display: flex;
     flex-direction: column;
@@ -304,19 +319,37 @@ table {
     cursor: pointer;
 }
 
-.projectContainer {
+.addProjectContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
 }
 
-.project {
+.projectContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
     padding: 7px;
 }
 
-.project:hover {
+.projectContainer:hover {
     background-color: grey;
     cursor: pointer;
     border-radius: 10px;
+}
+
+.activeButton {
+    background-color: rgb(172, 172, 172);
+    border-radius: 10px;
+}
+
+.dueToday {
+    border-radius: 50%;
+    width: 20px;
+    background-color: red;
+    font-weight: bold;
+    color:white;
+    display: flex;
+    justify-content: center;
 }
