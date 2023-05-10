@@ -2,6 +2,7 @@ import _ from 'lodash'
 import Task from './Task.js'
 import Project from './Project.js'
 import { closestIndexTo, compareAsc, daysToWeeks, format, getDay, isBefore, isPast, isThisWeek, isToday, max, parse, parseISO, setDay } from 'date-fns' 
+import { de } from 'date-fns/locale'
 
 let selected = null 
 
@@ -10,10 +11,12 @@ class UI {
     
     static loadPage() {
 
+        const home = document.querySelector('.home')
         const homePage = document.createElement('div')
         const todayPage = document.createElement('div')
         const weekPage = document.createElement('div')
 
+        home.classList.add('activeButton')
         homePage.classList.add('homePage')
         todayPage.classList.add('todayPage')
         weekPage.classList.add('weekPage')
@@ -50,6 +53,7 @@ class UI {
         UI.handleHomePage(homePage, todayPage, weekPage)
         UI.handleTodayPage(homePage, todayPage, weekPage)
         UI.handleWeekPage(homePage, todayPage, weekPage)
+        UI.handleDeleteProject()
     }
 
     static handleHomePage(homePage, todayPage, weekPage) {
@@ -64,21 +68,29 @@ class UI {
 
             if(e.target.classList.contains('home')) {
                 
-                
                 todayPage.style.display = 'none'
                 weekPage.style.display = 'none'
+                homePage.style.display = 'flex'
+
                 home.classList.add('activeButton')
                 today.classList.remove('activeButton')
                 week.classList.remove('activeButton')
+
                 const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
                 const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
-                homePage.style.display = 'flex'
                 const projectPages = document.querySelectorAll('.projectPage').forEach((x) => x.style.display = 'none')
                 const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
 
                 const tasks = document.querySelectorAll('.task')
                 tasks.forEach((task) => homePageList.appendChild(task))
                 
+                if(homePageList.children.length > 1) {
+                    homePageList.style.display = 'table'
+                    selected = null
+                } else if (homePageList.children.length < 2) {
+                    homePageList.style.display = 'none'
+                }
+
             }
         })
     }
@@ -86,6 +98,7 @@ class UI {
     static handleTodayPage(homePage, todayPage, weekPage) {
 
         const sideBar = document.querySelector('.sidebar')
+        const todayPageList = document.getElementById('todayPageList')
         const home = document.querySelector('.home')
         const today = document.querySelector('.today')
         const week = document.querySelector('.week')
@@ -96,17 +109,26 @@ class UI {
                 
                 homePage.style.display = 'none'
                 weekPage.style.display = 'none'
+                todayPage.style.display = 'flex'
+
                 home.classList.remove('activeButton')
                 today.classList.add('activeButton')
                 week.classList.remove('activeButton')
+                
                 const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
                 const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
-                todayPage.style.display = 'flex'
+
                 const projectPages = document.querySelectorAll('.projectPage').forEach((x) => x.style.display = 'none')
                 const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
 
                 const tasks = document.querySelectorAll('.task')
                 tasks.forEach((task) => UI.checkDate(task))
+
+                if(todayPageList.children.length < 2) {
+                    todayPageList.style.display = 'none'
+                } else {
+                    todayPageList.style.display = 'table'
+                }
             }
         })
     }
@@ -114,6 +136,7 @@ class UI {
     static handleWeekPage(homePage, todayPage, weekPage) {
 
         const sideBar = document.querySelector('.sidebar')
+        const weekPageList = document.getElementById('weekPageList')
         const home = document.querySelector('.home')
         const today = document.querySelector('.today')
         const week = document.querySelector('.week')
@@ -124,17 +147,26 @@ class UI {
                 
                 homePage.style.display = 'none'
                 todayPage.style.display = 'none'
+                weekPage.style.display = 'flex'
+                
                 home.classList.remove('activeButton')
                 today.classList.remove('activeButton')
                 week.classList.add('activeButton')
+                
                 const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
                 const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
-                weekPage.style.display = 'flex'
+
                 const projectPages = document.querySelectorAll('.projectPage').forEach((x) => x.style.display = 'none')
                 const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
 
                 const tasks = document.querySelectorAll('.task')
                 tasks.forEach((task) => UI.checkDate(task))
+
+                if(weekPageList.children.length < 2) {
+                    weekPageList.style.display = 'none'
+                } else {
+                    weekPageList.style.display = 'table'
+                }
             }
         })
     }
@@ -275,15 +307,15 @@ class UI {
                                     Project.addTask(page.getAttribute('id'), task.date, selectedTask.getAttribute('id'))
 
 
-                                        const dueToday = document.querySelector('.dueToday')
+                                    const dueToday = document.getElementById(`${page.getAttribute('id')}DueToday`)
 
                                         if(Project.tasksDueToday(page.getAttribute('id')) === 0) {
                             
-                                        dueToday.style.display = 'none'
+                                        dueToday.style.visibility = 'hidden'
                         
                                         } else {
 
-                                        dueToday.style.display = 'flex'
+                                        dueToday.style.visibility = 'visible'
                                         dueToday.textContent = `${Project.tasksDueToday(page.getAttribute('id'))}`
                         
                                         }
@@ -328,15 +360,15 @@ class UI {
                 
                 }
 
-                    const dueToday = document.querySelector('.dueToday')
+                    const dueToday = document.getElementById(`${page.getAttribute('id')}DueToday`)
 
                     if(Project.tasksDueToday(page.getAttribute('id')) === 0) {
                         
-                        dueToday.style.display = 'none'
+                        dueToday.style.visibility = 'hidden'
                     
                     } else {
 
-                    dueToday.style.display = 'flex'
+                    dueToday.style.visibility = 'visible'
                     dueToday.textContent = `${Project.tasksDueToday(page.getAttribute('id'))}`
                     
                 }
@@ -445,11 +477,25 @@ static handleEdit(page, element) {
 
     if(e.target.classList.contains('edit')) {
 
+        const thing = e.target.parentElement.parentElement.parentElement.parentElement
+
+        if(thing.classList.contains('todayPage') || thing.classList.contains('weekPage')) {
+
+            selected = e.target.parentElement.parentElement.getAttribute('id')
+            list.style.display = 'none'        
+            taskButton.style.display = 'none'
+            taskCreation.style.display = 'flex'
+
+            page.appendChild(taskCreation)
+        
+        } else {
+
         selected = e.target.parentElement.parentElement.getAttribute('id')
         list.style.display = 'none'        
         taskButton.style.display = 'none'
         taskCreation.style.display = 'flex'
-
+        
+        }
     }})}
 
 
@@ -458,19 +504,37 @@ static handleDelete(list) {
     list.addEventListener('click', (e) => {
 
         if(e.target.classList.contains('delete')) {
+
+            let page = e.target.parentElement.parentElement.parentElement.parentElement
+            let date = e.target.parentElement.previousElementSibling.textContent
+            let row = e.target.parentElement.parentElement
         
-            if(!e.target.parentElement.parentElement.classList.contains('task')) {
+            if(!row.classList.contains('task')) {
+
+                Project.deleteDate(page.getAttribute('id'), date)
+                Project.deleteTask(page.getAttribute('id'), date)
                 
-                Project.deleteDate(e.target.parentElement.parentElement.parentElement.parentElement.getAttribute('id'), e.target.parentElement.previousElementSibling.textContent)
-                Project.deleteTask(e.target.parentElement.parentElement.parentElement.parentElement.getAttribute('id'), e.target.parentElement.previousElementSibling.textContent)
-                e.target.parentElement.parentElement.remove()
+                const dueToday = document.getElementById(`${page.getAttribute('id')}DueToday`)
+
+                if(Project.tasksDueToday(page.getAttribute('id')) === 0) {
+                    
+                    dueToday.style.visibility = 'hidden'
+                
+                } else {
+
+                dueToday.style.visibility = 'visible'
+                dueToday.textContent = `${Project.tasksDueToday(page.getAttribute('id'))}`
+                
+            }    
+                
+                row.remove()
 
             } else {
 
-            e.target.parentElement.parentElement.remove()
-            Task.deleteDate(e.target.parentElement.previousElementSibling.textContent)
-            Task.deleteTask(e.target.parentElement.previousElementSibling.textContent)
-            
+                Task.deleteDate(date)
+                Task.deleteTask(date)
+                row.remove()
+
             }
     }
     
@@ -489,6 +553,7 @@ static handleAddProjectDisplay(addProject, addProjectContainer) {
 
         addProjectContainer.style.display = 'flex'
         addProject.style.display = 'none'
+
     })
 
 }
@@ -500,7 +565,7 @@ static addProjectDisplay() {
 
     const addProjectContainer = document.createElement('div')
     const projectInput = document.createElement('input')
-    projectInput.maxLength = 12
+    projectInput.maxLength = 10
         const buttons = document.createElement('div')
         const projectSubmit = document.createElement('button')
         projectSubmit.textContent = 'Submit'
@@ -546,6 +611,7 @@ if(projectInput.value !== '' && projectContainer === null) {
     const projectContainer = document.createElement('div')
     const project = document.createElement('div')
     const dueToday = document.createElement('div')
+    const deleteProject = document.createElement('div')
     const projectPage = document.createElement('div')  
 
     projectContainer.classList.add('projectContainer')
@@ -554,12 +620,18 @@ if(projectInput.value !== '' && projectContainer === null) {
     project.classList.add('project')
 
     dueToday.classList.add('dueToday')
+    dueToday.setAttribute('id', `${currentProject.name}PageDueToday`)
 
     projectPage.classList.add('projectPage')
     projectPage.setAttribute('id', `${currentProject.name}Page`)
 
+    deleteProject.classList.add('deleteProject')
+    deleteProject.textContent = 'X'
+
+    projectContainer.appendChild(deleteProject)
     projectContainer.appendChild(project)
     projectContainer.appendChild(dueToday)
+
     projectList.appendChild(projectContainer)
     mainPage.appendChild(projectPage)
 
@@ -569,7 +641,7 @@ if(projectInput.value !== '' && projectContainer === null) {
     
     addProjectContainer.style.display = 'none'
     projectPage.style.display = 'none'
-    dueToday.style.display = 'none'
+    dueToday.style.visibility = 'hidden'
     addProject.style.display = 'flex'
 
     UI.addList(projectPage, currentProject.name)
@@ -592,31 +664,108 @@ static handleProjectPage() {
 
     sideBar.addEventListener('click', (e) => {
 
-        if(e.target.parentElement.classList.contains('projectContainer') || e.target.classList.contains('projectContainer')) {
+        if(e.target.classList.contains('projectContainer') || e.target.classList.contains('project') || e.target.classList.contains('dueToday')) {
             
-            const projectPages = document.querySelectorAll('.projectPage').forEach((x) => x.style.display = 'none')
-            const projectPage = document.getElementById(`${e.target.textContent}Page`)
-            const projectContainer = document.getElementById(`${e.target.textContent}`)
+            const projectPages = document.querySelectorAll('.projectPage').forEach((projectPage) => projectPage.style.display = 'none')
+            
+            const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
+
+            if(e.target.classList.contains('projectContainer')) {
+            
+                const projectContainer = document.getElementById(`${e.target.lastElementChild.previousElementSibling.textContent}`)
+                projectContainer.classList.add('activeButton')
+
+                const projectPage = document.getElementById(`${e.target.firstElementChild.nextElementSibling.textContent}Page`)
+                projectPage.style.display = 'flex'
+
+                const projectList = document.getElementById(`${e.target.firstElementChild.nextElementSibling.textContent}List`)
+                const projectTasks = document.querySelectorAll(`.${e.target.firstElementChild.nextElementSibling.textContent}PageTask`).forEach((projectTask) => projectList.appendChild(projectTask))
+                
+                if(projectList.children.length > 1) {
+                    projectList.style.display = 'table'
+                    selected = null
+                } else if (projectList.children.length < 2) {
+                    projectList.style.display = 'none'
+                }
+
+            } else if(e.target.classList.contains('dueToday')) {
+
+                const projectContainer = document.getElementById(`${e.target.previousElementSibling.textContent}`)
+                projectContainer.classList.add('activeButton')
+
+                const projectPage = document.getElementById(`${e.target.previousElementSibling.textContent}Page`)
+                projectPage.style.display = 'flex'
+
+                const projectList = document.getElementById(`${e.target.previousElementSibling.textContent}List`)
+                const projectTasks = document.querySelectorAll(`.${e.target.previousElementSibling.textContent}PageTask`).forEach((projectTask) => projectList.appendChild(projectTask))
+
+                if(projectList.children.length > 1) {
+                    projectList.style.display = 'table'
+                    selected = null
+                } else if (projectList.children.length < 2) {
+                    projectList.style.display = 'none'
+                }
+
+            } else {
+                
+                const projectContainer = document.getElementById(`${e.target.textContent}`)
+                projectContainer.classList.add('activeButton')
+
+                const projectPage = document.getElementById(`${e.target.textContent}Page`)
+                projectPage.style.display = 'flex'
+
+                const projectList = document.getElementById(`${e.target.textContent}List`)
+                const projectTasks = document.querySelectorAll(`.${e.target.textContent}PageTask`).forEach((projectTask) => projectList.appendChild(projectTask))
+
+                if(projectList.children.length > 1) {
+                    projectList.style.display = 'table'
+                    selected = null
+                } else if (projectList.children.length < 2) {
+                    projectList.style.display = 'none'
+                }
+
+            }
 
             homePage.style.display = 'none'
             todayPage.style.display = 'none'
             weekPage.style.display = 'none'
+
             home.classList.remove('activeButton')
             today.classList.remove('activeButton')
             week.classList.remove('activeButton')
 
-            const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
-            projectContainer.classList.add('activeButton')
             const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
             const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
-            projectPage.style.display = 'flex'
-
-            const projectList = document.getElementById(`${e.target.textContent}List`)
-            const projectTasks = document.querySelectorAll(`.${e.target.textContent}PageTask`)
-            projectTasks.forEach((projectTask) => projectList.appendChild(projectTask))
             
-}})
+} 
+})
     
+}
+
+static handleDeleteProject() {
+
+    const sideBar = document.querySelector('.sidebar')
+
+    sideBar.addEventListener('click', (e) => {
+
+        if(e.target.classList.contains('deleteProject')) {
+
+            const home = document.querySelector('.home')
+            const homePage = document.querySelector('.homePage')
+            const project = e.target.parentElement 
+            const projectPage = document.getElementById(`${e.target.nextElementSibling.textContent}Page`)
+
+            if(project.classList.contains('activeButton')) {
+                home.classList.add('activeButton')
+                homePage.style.display = 'flex'
+            }
+
+            Project.deleteProject(projectPage.getAttribute('id'))
+            project.remove()
+            projectPage.remove()
+
+        }
+    })
 }
 
 static handleCancel(cancel, addprojectContainer, addProject) {

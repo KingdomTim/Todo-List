@@ -1,8 +1,5 @@
 import {parseISO, closestIndexTo,max,isAfter, isToday, format} from 'date-fns'
 
-let parsedDateArray = []
-let dateArray = []
-let taskArray = []
 let projectList = {}
 
 class Project {
@@ -11,53 +8,58 @@ class Project {
     }
 
     static getDateArrayIndex(project, date) {
-       
-        return projectList[project]['dateArray'].indexOf(date)
+        
+        let projectDateArray = projectList[project]['dateArray']
+
+        return projectDateArray.indexOf(date)
     
     }
 
     static addDate(project, date) {
 
-        let parsedDate = parseISO(date)
-        let closestDateIndex = closestIndexTo(parsedDate, projectList[project]['parsedDateArray'])
-        let closestElement = projectList[project]['parsedDateArray'][closestDateIndex]
-        let latestDate = max(projectList[project]['parsedDateArray'])
+        let projectDateArray = projectList[project]['dateArray']
+        let projectParsedDateArray = projectList[project]['parsedDateArray']
 
-        if(projectList[project]['parsedDateArray'].length === 0 || isAfter(parsedDate, latestDate)) {
+        let parsedDate = parseISO(date)
+        let closestDateIndex = closestIndexTo(parsedDate, projectParsedDateArray)
+        let closestElement = projectParsedDateArray[closestDateIndex]
+        let latestDate = max(projectParsedDateArray)
+
+        if(projectParsedDateArray.length === 0 || isAfter(parsedDate, latestDate)) {
             
-            projectList[project]['parsedDateArray'].push(parsedDate)
-            projectList[project]['dateArray'].push(date)
+            projectParsedDateArray.push(parsedDate)
+            projectDateArray.push(date)
             
-            console.log(projectList[project])
+            console.log(projectList)
             
         } else {
             
             if(isAfter(parsedDate, closestElement)) {
 
-                let thing = format(closestElement, 'yyyy-MM-dd')
+                let formattedClosestElement = format(closestElement, 'yyyy-MM-dd')
 
-                if(projectList[project]['dateArray'].indexOf(thing) !== projectList[project]['dateArray'].lastIndexOf(thing)) {
+                if(projectDateArray.indexOf(formattedClosestElement) !== projectDateArray.lastIndexOf(formattedClosestElement)) {
                     
-                    projectList[project]['parsedDateArray'].splice(projectList[project]['dateArray'].lastIndexOf(thing)+1,0,parsedDate)
-                    projectList[project]['dateArray'].splice(projectList[project]['dateArray'].lastIndexOf(thing)+1,0, date)
+                    projectParsedDateArray.splice(projectDateArray.lastIndexOf(formattedClosestElement)+1,0,parsedDate)
+                    projectDateArray.splice(projectDateArray.lastIndexOf(formattedClosestElement)+1,0, date)
 
-                    console.log(projectList[project])
+                    console.log(projectList)
                 
                 } else {
 
-                projectList[project]['parsedDateArray'].splice(closestDateIndex+1,0,parsedDate)
-                projectList[project]['dateArray'].splice(closestDateIndex+1,0, date)
+                projectParsedDateArray.splice(closestDateIndex+1,0,parsedDate)
+                projectDateArray.splice(closestDateIndex+1,0, date)
                 
-                console.log(projectList[project])
+                console.log(projectList)
             
                 }
 
             } else {
 
-                projectList[project]['parsedDateArray'].splice(closestDateIndex,0,parsedDate)
-                projectList[project]['dateArray'].splice(closestDateIndex,0,date)
+                projectParsedDateArray.splice(closestDateIndex,0,parsedDate)
+                projectDateArray.splice(closestDateIndex,0,date)
                 
-                console.log(projectList[project])
+                console.log(projectList)
 
 
             }
@@ -66,23 +68,29 @@ class Project {
 
     static deleteDate(project, date) {
 
-        let regularDateIndex = projectList[project]['dateArray'].indexOf(date)
+        let projectDateArray = projectList[project]['dateArray']
+        let projectParsedDateArray = projectList[project]['parsedDateArray']
 
-        projectList[project]['parsedDateArray'].splice(regularDateIndex,1)
-        projectList[project]['dateArray'].splice(regularDateIndex,1)
+        let regularDateIndex = projectDateArray.indexOf(date)
+
+        projectParsedDateArray.splice(regularDateIndex,1)
+        projectDateArray.splice(regularDateIndex,1)
 
     }
 
     static editDate(project, oldDateIndex, newDate) {
 
+        let projectDateArray = projectList[project]['dateArray']
+        let projectParsedDateArray = projectList[project]['parsedDateArray']
+
         oldDateIndex = oldDateIndex - 1
 
-        let oldDate = projectList[project]['dateArray'][oldDateIndex]
+        let oldDate = projectDateArray[oldDateIndex]
 
         if(oldDate !== newDate) {
 
-            projectList[project]['dateArray'].splice(oldDateIndex,1)
-            projectList[project]['parsedDateArray'].splice(oldDateIndex,1)
+            projectDateArray.splice(oldDateIndex,1)
+            projectParsedDateArray.splice(oldDateIndex,1)
 
             Project.addDate(project, newDate)
 
@@ -91,34 +99,38 @@ class Project {
 
     static addTask(project, date, task) {
         
-        let parsedDate = parseISO(date)
-        let closestDateIndex = closestIndexTo(parsedDate, projectList[project]['parsedDateArray'])
-        let closestElement = projectList[project]['parsedDateArray'][closestDateIndex]
-        let latestDate = max(projectList[project]['parsedDateArray'])
+        let projectTaskArray = projectList[project]['taskArray']
+        let projectDateArray = projectList[project]['dateArray']
+        let projectParsedDateArray = projectList[project]['parsedDateArray']
 
-        if(parsedDateArray.length === 0 || isAfter(parsedDate, latestDate)) {
+        let parsedDate = parseISO(date)
+        let closestDateIndex = closestIndexTo(parsedDate, projectParsedDateArray)
+        let closestElement = projectParsedDateArray[closestDateIndex]
+        let latestDate = max(projectParsedDateArray)
+
+        if(projectParsedDateArray.length === 0 || isAfter(parsedDate, latestDate)) {
             
-            projectList[project]['taskArray'].push(task)
+            projectTaskArray.push(task)
             
         } else {
             
             if(isAfter(parsedDate, closestElement)) {
             
-                let thing = format(closestElement, 'yyyy-MM-dd')
+                let formattedClosestElement = format(closestElement, 'yyyy-MM-dd')
 
-                if(projectList[project]['dateArray'].indexOf(thing) !== projectList[project]['dateArray'].lastIndexOf(thing)) {
+                if(projectDateArray.indexOf(formattedClosestElement) !== projectDateArray.lastIndexOf(formattedClosestElement)) {
                     
-                    projectList[project]['taskArray'].splice(projectList[project]['dateArray'].lastIndexOf(thing)+1,0,task)
+                    projectTaskArray.splice(projectDateArray.lastIndexOf(formattedClosestElement)+1,0,task)
                 
                 } else {
 
-                    projectList[project]['taskArray'].splice(closestDateIndex+1,0,task)
+                    projectTaskArray.splice(closestDateIndex+1,0,task)
             
                 }
 
             } else {
 
-                projectList[project]['taskArray'].splice(closestDateIndex,0,task)
+                projectTaskArray.splice(closestDateIndex,0,task)
 
             }
         }
@@ -128,9 +140,11 @@ class Project {
 
     static deleteTask(project, task) {
 
-        let taskIndex = projectList[project]['taskArray'].indexOf(task)
+        let projectTaskArray = projectList[project]['taskArray']
 
-        projectList[project]['taskArray'].splice(taskIndex,1)
+        let taskIndex = projectTaskArray.indexOf(task)
+
+        projectTaskArray.splice(taskIndex,1)
         
         console.log(projectList)
 
@@ -138,7 +152,9 @@ class Project {
 
     static tasksDueToday(project) {
 
-        let dueToday = projectList[project]['parsedDateArray'].filter((x) => isToday(x)).length
+        let projectParsedDateArray = projectList[project]['parsedDateArray']
+
+        let dueToday = projectParsedDateArray.filter((x) => isToday(x)).length
 
         return dueToday
     }
@@ -146,6 +162,10 @@ class Project {
 
     static addProject(project) {
         
+        let parsedDateArray = []
+        let taskArray = []
+        let dateArray = []
+
         projectList[`${project}Page`] = {
             
                                 'parsedDateArray':parsedDateArray,
@@ -161,11 +181,10 @@ class Project {
 
     static deleteProject(project) { 
 
-        let projectIndex = projectArray.indexOf(project)
-
-        projectArray.splice(projectIndex,1)
+        delete projectList[project]
         
-        console.log(projectArray)
+        console.log(projectList)
+        
     }
 }
 

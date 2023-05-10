@@ -21,21 +21,21 @@ class Task {
 
     static getDateArrayIndex(date) {
        
-        return list['dateArray'].indexOf(date)
+        return dateArray.indexOf(date)
     
     }
 
     static addDate(date) {
 
         let parsedDate = parseISO(date)
-        let closestDateIndex = closestIndexTo(parsedDate, list['parsedDateArray'])
-        let closestElement = list['parsedDateArray'][closestDateIndex]
-        let latestDate = max(list['parsedDateArray'])
+        let closestDateIndex = closestIndexTo(parsedDate, parsedDateArray)
+        let closestElement = parsedDateArray[closestDateIndex]
+        let latestDate = max(parsedDateArray)
 
         if(parsedDateArray.length === 0 || isAfter(parsedDate, latestDate)) {
             
-            list['parsedDateArray'].push(parsedDate)
-            list['dateArray'].push(date)
+            parsedDateArray.push(parsedDate)
+            dateArray.push(date)
             
             console.log(list)
 
@@ -44,19 +44,19 @@ class Task {
             
             if(isAfter(parsedDate, closestElement)) {
             
-                let thing = format(closestElement, 'yyyy-MM-dd')
+                let formattedClosestElement = format(closestElement, 'yyyy-MM-dd')
 
-                if(list['dateArray'].indexOf(thing) !== list['dateArray'].lastIndexOf(thing)) {
+                if(dateArray.indexOf(formattedClosestElement) !== dateArray.lastIndexOf(formattedClosestElement)) {
                     
-                    list['parsedDateArray'].splice(list['dateArray'].lastIndexOf(thing)+1,0,parsedDate)
-                    list['dateArray'].splice(list['dateArray'].lastIndexOf(thing)+1,0, date)
+                    parsedDateArray.splice(dateArray.lastIndexOf(formattedClosestElement)+1,0,parsedDate)
+                    dateArray.splice(dateArray.lastIndexOf(formattedClosestElement)+1,0, date)
 
                     console.log(list)
                 
                 } else {
 
-                list['parsedDateArray'].splice(closestDateIndex+1,0,parsedDate)
-                list['dateArray'].splice(closestDateIndex+1,0, date)
+                parsedDateArray.splice(closestDateIndex+1,0,parsedDate)
+                dateArray.splice(closestDateIndex+1,0, date)
                 
                 console.log(list)
             
@@ -64,8 +64,8 @@ class Task {
 
             } else {
 
-                list['parsedDateArray'].splice(closestDateIndex,0,parsedDate)
-                list['dateArray'].splice(closestDateIndex,0,date)
+                parsedDateArray.splice(closestDateIndex,0,parsedDate)
+                dateArray.splice(closestDateIndex,0,date)
                 
                 console.log(list)
 
@@ -76,10 +76,10 @@ class Task {
 
     static deleteDate(date) {
 
-        let dateIndex = list['dateArray'].indexOf(date)
+        let dateIndex = dateArray.indexOf(date)
 
-        list['dateArray'].splice(dateIndex,1)
-        list['parsedDateArray'].splice(dateIndex,1)
+        dateArray.splice(dateIndex,1)
+        parsedDateArray.splice(dateIndex,1)
         
         console.log(list)
     }
@@ -89,12 +89,12 @@ class Task {
 
         oldDateIndex = oldDateIndex-1
 
-        let oldDate = list['dateArray'][oldDateIndex]
+        let oldDate = dateArray[oldDateIndex]
 
         if(oldDate !== newDate) {
 
-            list['dateArray'].splice(oldDateIndex,1)
-            list['parsedDateArray'].splice(oldDateIndex,1)
+            dateArray.splice(oldDateIndex,1)
+            parsedDateArray.splice(oldDateIndex,1)
 
             Task.addDate(newDate)
 
@@ -107,33 +107,33 @@ class Task {
     static addTask(date, task) {
 
         let parsedDate = parseISO(date)
-        let closestDateIndex = closestIndexTo(parsedDate, list['parsedDateArray'])
-        let closestElement = list['parsedDateArray'][closestDateIndex]
-        let latestDate = max(list['parsedDateArray'])
+        let closestDateIndex = closestIndexTo(parsedDate, parsedDateArray)
+        let closestElement = parsedDateArray[closestDateIndex]
+        let latestDate = max(parsedDateArray)
 
         if(parsedDateArray.length === 0 || isAfter(parsedDate, latestDate)) {
             
-            list['taskArray'].push(task)
+            taskArray.push(task)
             
         } else {
             
             if(isAfter(parsedDate, closestElement)) {
             
-                let thing = format(closestElement, 'yyyy-MM-dd')
+                let formattedClosestElement = format(closestElement, 'yyyy-MM-dd')
 
-                if(list['dateArray'].indexOf(thing) !== list['dateArray'].lastIndexOf(thing)) {
+                if(dateArray.indexOf(formattedClosestElement) !== dateArray.lastIndexOf(formattedClosestElement)) {
                     
-                    list['taskArray'].splice(list['dateArray'].lastIndexOf(thing)+1,0,task)
+                    taskArray.splice(dateArray.lastIndexOf(formattedClosestElement)+1,0,task)
                 
                 } else {
 
-                list['taskArray'].splice(closestDateIndex+1,0,task)
+                taskArray.splice(closestDateIndex+1,0,task)
             
                 }
 
             } else {
 
-                list['taskArray'].splice(closestDateIndex,0,task)
+                taskArray.splice(closestDateIndex,0,task)
 
             }
         }
@@ -142,7 +142,7 @@ class Task {
 
     static deleteTask(task) {
 
-        let taskIndex = list['taskArray'].indexOf(task)
+        let taskIndex = taskArray.indexOf(task)
 
         taskArray.splice(taskIndex,1)
         

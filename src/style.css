@@ -41,7 +41,7 @@ h1 {
     background-color: rgb(240, 240, 240);
     padding: 30px;
     font-size: 20px;
-    width: 185px;
+    width: 220px;
 }
 
 .sideTop {
@@ -326,6 +326,12 @@ table {
     align-items: center;
 }
 
+.projectList {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 .projectContainer {
     display: flex;
     flex-wrap: nowrap;
@@ -337,6 +343,20 @@ table {
     background-color: grey;
     cursor: pointer;
     border-radius: 10px;
+}
+
+.deleteProject {
+    color:red;
+    font-weight: bold;
+    visibility: hidden;
+}
+
+.projectContainer:hover .deleteProject {
+    visibility: visible;
+}
+
+.project {
+    font-size: 18px;
 }
 
 .activeButton {
