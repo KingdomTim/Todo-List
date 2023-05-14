@@ -190,12 +190,6 @@ class UI {
                 const tasks = document.querySelectorAll('.task')
                 tasks.forEach((task) => UI.checkDate(task))
 
-                if(weekPageList.children.length < 2) {
-                    weekPageList.style.display = 'none'
-                } else {
-                    weekPageList.style.display = 'table'
-                }
-
                 weekPage.appendChild(taskCreation)
                 taskCreation.style.display = 'none'
             }
@@ -450,6 +444,8 @@ class UI {
         const weekPageList = document.getElementById('weekPageList')
         const homePageList = document.getElementById('homePageList')
         const home = document.querySelector('.home')
+        const today = document.querySelector('.today')
+        const week = document.querySelector('.week')
         
         let date = task.lastElementChild.previousElementSibling.textContent
         let parsedDate = parseISO(task.lastElementChild.previousElementSibling.textContent)
@@ -460,37 +456,118 @@ class UI {
             if(homePageList.children.length < 2) {
             
             homePageList.appendChild(task)
+            task.style.display = 'table-row'
             homePageList.style.display = 'table'
             
             } else {
 
             let dateIndex = Task.getDateArrayIndex(date)
-            console.log(dateIndex)
-            
+
+            task.style.display = 'table-row'
             homePageList.insertBefore(task, Array.from(homePageList.children)[dateIndex+=1])
 
         }
     
-        } else if(isToday(parsedDate)) {
+        } else if(today.classList.contains('activeButton')) {
 
-            todayPageList.appendChild(task)
+            if(todayPageList.children.length < 2) {
+                
+                todayPageList.appendChild(task)
+                
+                } else {
+    
+                let dateIndex = Task.getDateArrayIndex(date)
+                
+                todayPageList.insertBefore(task, Array.from(todayPageList.children)[dateIndex+=1])
+    
+            }
 
-        } else if(isThisWeek(parsedDate, {weekStartsOn: dayOfWeek})) {
+            UI.checkToday()
+
+        } else if(week.classList.contains('activeButton')) {
 
             if(weekPageList.children.length < 2) {
-            
-            weekPageList.appendChild(task)
-            
-            } else {
-            
-            let dateIndex = Task.getDateArrayIndex(date)
-            weekPageList.insertBefore(task, Array.from(weekPageList.children)[dateIndex+=1])
-            
+                
+                weekPageList.appendChild(task)
+                
+                } else {
+    
+                let dateIndex = Task.getDateArrayIndex(date)
+                
+                weekPageList.insertBefore(task, Array.from(weekPageList.children)[dateIndex+=1])
+    
             }
-            
 
+            UI.checkWeek()
+    
+        
+            }
+    }   
+    
+    static checkToday() {
+        
+        const todayPageList = document.getElementById('todayPageList')
+        
+        const tasks = document.querySelectorAll('.task').forEach((task) => {
+
+        let parsedDate = parseISO(task.lastElementChild.previousElementSibling.textContent)
+    
+        if(isToday(parsedDate)) {
+            
+            task.style.display = 'table-row'
+        
+        } else {
+            
+            task.style.display = 'none'
+        
         }
-}
+
+
+    })
+
+    if(Array.from(todayPageList.children).some((x) => x.style.display === 'table-row')) {
+        
+        todayPageList.style.display = 'table'
+
+    } else {
+        
+        todayPageList.style.display = 'none'
+    }
+
+    }
+
+    static checkWeek() {
+        
+        const weekPageList = document.getElementById('weekPageList')
+        
+        const tasks = document.querySelectorAll('.task').forEach((task) => {
+
+        let parsedDate = parseISO(task.lastElementChild.previousElementSibling.textContent)
+        let dayOfWeek = getDay(new Date())
+    
+        if(isThisWeek(parsedDate, {weekStartsOn: dayOfWeek})) {
+            
+            task.style.display = 'table-row'
+        
+        } else {
+            
+            task.style.display = 'none'
+        
+        }
+
+
+    })
+
+    if(Array.from(weekPageList.children).some((x) => x.style.display === 'table-row')) {
+        
+        weekPageList.style.display = 'table'
+
+    } else {
+        
+        weekPageList.style.display = 'none'
+    }
+
+    }
 
 static handleCheck(row) {
 
