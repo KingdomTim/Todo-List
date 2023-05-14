@@ -29,6 +29,27 @@ class UI {
         todayPageHeader.style.alignSelf = 'center'
         weekPageHeader.textContent = 'Week'
         weekPageHeader.style.alignSelf = 'center'
+
+        const taskCreation = document.createElement('div')
+        taskCreation.classList.add('taskCreation')
+        taskCreation.innerHTML = `<div class='leftSide'>
+                                    <input class='titleInput' placeholder='Title'>
+                                    <textarea class='descriptionInput' rows= '4' cols='50' placeholder='Description' style="resize:none"></textArea>
+                                    </div>
+                                    <div class='rightSide'>
+                                    <input type='date' class='dateInput'>
+                                    <select class='priorityInput'>
+                                        <option selected disabled>Priority</option>
+                                        <option value='Low'>Low</option>
+                                        <option value='Medium'>Medium</option>
+                                        <option value='Urgent'>Urgent</option>
+                                    </select>
+                                    <button class='submit'>Submit</button>
+                                    </div>`
+
+        taskCreation.style.display = 'none'
+
+        homePage.appendChild(taskCreation)
         
         const mainPage = document.querySelector('.mainPage')
 
@@ -50,6 +71,7 @@ class UI {
         UI.addList(todayPage, 'todayPage')
         UI.addList(weekPage, 'weekPage')
         UI.addTask(homePage)
+        UI.submit()
         UI.handleHomePage(homePage, todayPage, weekPage)
         UI.handleTodayPage(homePage, todayPage, weekPage)
         UI.handleWeekPage(homePage, todayPage, weekPage)
@@ -63,6 +85,7 @@ class UI {
         const home = document.querySelector('.home')
         const today = document.querySelector('.today')
         const week = document.querySelector('.week')
+        const taskCreation = document.querySelector('.taskCreation')
 
         sideBar.addEventListener('click', (e) => {
 
@@ -76,13 +99,12 @@ class UI {
                 today.classList.remove('activeButton')
                 week.classList.remove('activeButton')
 
-                const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
                 const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
                 const projectPages = document.querySelectorAll('.projectPage').forEach((x) => x.style.display = 'none')
                 const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
 
                 const tasks = document.querySelectorAll('.task')
-                tasks.forEach((task) => homePageList.appendChild(task))
+                tasks.forEach((task) => UI.checkDate(task))
                 
                 if(homePageList.children.length > 1) {
                     homePageList.style.display = 'table'
@@ -90,6 +112,9 @@ class UI {
                 } else if (homePageList.children.length < 2) {
                     homePageList.style.display = 'none'
                 }
+
+                homePage.appendChild(taskCreation)
+                taskCreation.style.display = 'none'
 
             }
         })
@@ -102,6 +127,7 @@ class UI {
         const home = document.querySelector('.home')
         const today = document.querySelector('.today')
         const week = document.querySelector('.week')
+        const taskCreation = document.querySelector('.taskCreation')
 
         sideBar.addEventListener('click', (e) => {
 
@@ -115,7 +141,6 @@ class UI {
                 today.classList.add('activeButton')
                 week.classList.remove('activeButton')
                 
-                const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
                 const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
 
                 const projectPages = document.querySelectorAll('.projectPage').forEach((x) => x.style.display = 'none')
@@ -129,6 +154,9 @@ class UI {
                 } else {
                     todayPageList.style.display = 'table'
                 }
+
+                todayPage.appendChild(taskCreation)
+                taskCreation.style.display = 'none'
             }
         })
     }
@@ -140,6 +168,7 @@ class UI {
         const home = document.querySelector('.home')
         const today = document.querySelector('.today')
         const week = document.querySelector('.week')
+        const taskCreation = document.querySelector('.taskCreation')
 
         sideBar.addEventListener('click', (e) => {
 
@@ -153,7 +182,6 @@ class UI {
                 today.classList.remove('activeButton')
                 week.classList.add('activeButton')
                 
-                const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
                 const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
 
                 const projectPages = document.querySelectorAll('.projectPage').forEach((x) => x.style.display = 'none')
@@ -167,6 +195,9 @@ class UI {
                 } else {
                     weekPageList.style.display = 'table'
                 }
+
+                weekPage.appendChild(taskCreation)
+                taskCreation.style.display = 'none'
             }
         })
     }
@@ -179,7 +210,7 @@ class UI {
         taskButton.textContent = '+ Add Task'
 
         page.appendChild(taskButton)
-        UI.handleTaskButton(page, taskButton)
+        UI.handleTaskButton(taskButton)
 
     }
 
@@ -209,51 +240,47 @@ class UI {
         UI.handleDelete(list)
     }
 
-    static handleTaskButton(page, taskButton) {
-            
-        const taskCreation = document.createElement('div')
-        page.appendChild(taskCreation)
-        
+    static handleTaskButton(taskButton) {
 
-        taskButton.addEventListener('click',() => {
+        const taskCreation = document.querySelector('.taskCreation')
+        const titleInput = document.querySelector('.titleInput')
+        const descriptionInput = document.querySelector('.descriptionInput')
+        const dateInput = document.querySelector('.dateInput')
+        const priorityInput = document.querySelector('.priorityInput')
+
+        taskButton.addEventListener('click',(e) => {
+            
+            const page = e.target.parentElement
+
             taskButton.style.display = 'none'
-            taskCreation.innerHTML = `<div class='taskCreation'>
-                                    <div class='leftSide'>
-                                    <input class='titleInput' placeholder='Title'>
-                                    <textarea class='descriptionInput' rows= '4' cols='50' placeholder='Description' style="resize:none"></textArea>
-                                    </div>
-                                    <div class='rightSide'>
-                                    <input type='date' class='dateInput'>
-                                    <select class='priorityInput'>
-                                        <option selected disabled>Priority</option>
-                                        <option value='Low'>Low</option>
-                                        <option value='Medium'>Medium</option>
-                                        <option value='Urgent'>Urgent</option>
-                                    </select>
-                                    <button class='submit'>Submit</button>
-                                    </div>
-                                </div>`
-                            
-                UI.submit(page)
+            page.appendChild(taskCreation)
+            taskCreation.style.display = 'flex'
+
+            titleInput.value = ''
+            descriptionInput.value = ''
+            dateInput.value = ''
+            priorityInput.selectedIndex = 0
+
         })
 
     }
 
 
-    static submit(page) {
+    static submit() {
 
-        const titleInput = page.querySelector('.titleInput')
-        const descriptionInput = page.querySelector('.descriptionInput')
-        const dateInput = page.querySelector('.dateInput')
-        const priorityInput = page.querySelector('.priorityInput')
-        const taskButton = page.querySelector('.taskButton')
-        const taskCreation = page.querySelector('.taskCreation')
-        const submit = page.querySelector('.submit')
+        const titleInput = document.querySelector('.titleInput')
+        const descriptionInput = document.querySelector('.descriptionInput')
+        const dateInput = document.querySelector('.dateInput')
+        const priorityInput = document.querySelector('.priorityInput')
+        const taskCreation = document.querySelector('.taskCreation')
+        const submit = document.querySelector('.submit')
 
         submit.addEventListener('click', (e) => {
         
-        const list = document.getElementById(e.target.parentElement.parentElement.parentElement.parentElement.firstElementChild.getAttribute('id'))
+        const page = e.target.parentElement.parentElement.parentElement
+        const list = page.querySelector('.list')
         const selectedTask = document.getElementById(selected)
+        const taskButton = page.querySelector('.taskButton')
 
         let task = new Task(titleInput.value, descriptionInput.value, dateInput.value, priorityInput.value)
 
@@ -268,177 +295,202 @@ class UI {
                                 <img class='edit' src='./Images/edit.png'>
                                 <img class='delete' src='./Images/delete.png'></td>`
                 
-                                if(task.priority === 'Urgent') {
-                                    selectedTask.classList.add('urgent')
-                                    selectedTask.classList.remove('medium')
-                                    selectedTask.classList.remove('low')
-                                } else if(task.priority === 'Medium') {
-                                    selectedTask.classList.add('medium')
-                                    selectedTask.classList.remove('urgent')
-                                    selectedTask.classList.remove('low')
-                                } else {
-                                    selectedTask.classList.add('low')
-                                    selectedTask.classList.remove('urgent')
-                                    selectedTask.classList.remove('medium')
-                                }
+                               UI.checkPriority(task.priority, selectedTask)
 
                                 if(page.getAttribute('id') === null) {
 
                                     Task.editDate(Array.from(list.children).indexOf(selectedTask), task.date)
-                                    let dateIndex = Task.getDateArrayIndex(task.date)
+                                            
+                                            Task.deleteTask(selectedTask.getAttribute('id'))
+                                            Task.addTask(task.date, selectedTask.getAttribute('id'))
 
-
-                                    list.removeChild(selectedTask)
-                                    list.insertBefore(selectedTask, Array.from(list.children)[dateIndex+=1])
-
-                                    Task.deleteTask(selectedTask.getAttribute('id'))
-                                    Task.addTask(task.date, selectedTask.getAttribute('id'))
-
+                                            list.removeChild(selectedTask)
+                                            UI.checkDate(selectedTask)
                                 } else {
 
                                     Project.editDate(page.getAttribute('id'), Array.from(list.children).indexOf(selectedTask), task.date)
-                                    let dateIndex = Project.getDateArrayIndex(page.getAttribute('id'), task.date)
-
 
                                     list.removeChild(selectedTask)
-                                    list.insertBefore(selectedTask, Array.from(list.children)[dateIndex+=1])
 
                                     Project.deleteTask(page.getAttribute('id'), selectedTask.getAttribute('id'))
                                     Project.addTask(page.getAttribute('id'), task.date, selectedTask.getAttribute('id'))
 
-
-                                    const dueToday = document.getElementById(`${page.getAttribute('id')}DueToday`)
-
-                                        if(Project.tasksDueToday(page.getAttribute('id')) === 0) {
-                            
-                                        dueToday.style.visibility = 'hidden'
-                        
-                                        } else {
-
-                                        dueToday.style.visibility = 'visible'
-                                        dueToday.textContent = `${Project.tasksDueToday(page.getAttribute('id'))}`
-                        
-                                        }
+                                    UI.checkProjectDate(page, selectedTask)
+                                    
                                 }
 
-                                list.style.display = 'table'  
-                                taskButton.style.display = 'flex'
-                                taskCreation.style.display = 'none'
+                                if(page.classList.contains('todayPage')) {
+
+                                    if(list.children.length < 2) {
+                                        list.style.display = 'none'
+                                        taskCreation.style.display = 'none'
+                                    } else {
+                                        list.style.display = 'table'
+                                        taskCreation.style.display = 'none'
+                                    }
+                
+                                } else if (page.classList.contains('weekPage')) {
+                
+                                    if(list.children.length < 2) {
+                                        list.style.display = 'none'
+                                        taskCreation.style.display = 'none'
+                                    } else {
+                                        list.style.display = 'table'
+                                        taskCreation.style.display = 'none'
+                                    }
+                
+                                } else {
+                
+                                    list.style.display = 'table'
+                                    taskButton.style.display = 'flex'
+                                    taskCreation.style.display = 'none'
+                                    
+                                }
+
                                 selected = null
             } else {
 
-            const row = document.createElement('tr')
-            row.classList.add('task')
+                const row = document.createElement('tr')
+                row.classList.add('task')
 
-            row.innerHTML = `   <td>${task.title}</td>
-                                <td>${task.description}</td>
-                                <td>${task.date}</td>
-                                <td width='100'><img class='check' src='./Images/checkMark.png'>
-                                <img class='edit' src='./Images/edit.png'>
-                                <img class='delete' src='./Images/delete.png'></td>`
-            
-            row.setAttribute('id', crypto.randomUUID())
-
-
-            if(page.classList.contains('projectPage')) {
+                row.innerHTML = `   <td>${task.title}</td>
+                                    <td>${task.description}</td>
+                                    <td>${task.date}</td>
+                                    <td width='100'><img class='check' src='./Images/checkMark.png'>
+                                    <img class='edit' src='./Images/edit.png'>
+                                    <img class='delete' src='./Images/delete.png'></td>`
                 
-                row.classList.add(`${page.getAttribute('id')}Task`)
-                row.classList.remove('task')
+                row.setAttribute('id', crypto.randomUUID())
+                
+                if(page.classList.contains('projectPage')) {
+                    
+                    row.classList.add(`${page.getAttribute('id')}Task`)
+                    row.classList.remove('task')
 
-                Project.addDate(page.getAttribute('id'), task.date)
-                Project.addTask(page.getAttribute('id'), task.date, row.getAttribute('id'))
+                    Project.addDate(page.getAttribute('id'), task.date)
+                    Project.addTask(page.getAttribute('id'), task.date, row.getAttribute('id'))
+                    
+                    UI.checkProjectDate(page, row)
 
-                let dateIndex = Project.getDateArrayIndex(page.getAttribute('id'), task.date)
+                } else {
 
-                if(list.children.length < 2) {
-                   
-                    list.appendChild(row)
+                Task.addDate(task.date)
+                Task.addTask(task.date, row.getAttribute('id'))
+                UI.checkDate(row)
+            
+                }
+
+                UI.checkPriority(task.priority, row)
+                
+                list.style.display = 'table'
+                taskButton.style.display = 'flex'
+                taskCreation.style.display = 'none'
+
+                UI.handleCheck(row)
+                UI.handleEdit(page, row)
+                selected = null
+                
+           }}
+        })
+    }
+
+    static checkPriority(priority, row) {
+
+        if(priority === 'Urgent') {
+            row.classList.add('urgent')
+            row.classList.remove('medium')
+            row.classList.remove('low')
+        } else if(priority === 'Medium') {
+            row.classList.add('medium')
+            row.classList.remove('urgent')
+            row.classList.remove('low')
+        } else {
+            row.classList.add('low')
+            row.classList.remove('urgent')
+            row.classList.remove('medium')
+        }
+
+    }
+
+    static checkProjectDate(projectPage, task) {
+        
+        let date = task.lastElementChild.previousElementSibling.textContent
+        const projectList = document.getElementById(`${projectPage.firstElementChild.getAttribute('id')}`)
+
+        let dateIndex = Project.getDateArrayIndex(projectPage.getAttribute('id'), date)
+
+                if(projectList.children.length < 2) {
+                
+                    projectList.appendChild(task)
                 
                 } else {
                 
-                    list.insertBefore(row, list.children[dateIndex+=1])
+                    projectList.insertBefore(task, projectList.children[dateIndex+=1])
                 
                 }
 
-                    const dueToday = document.getElementById(`${page.getAttribute('id')}DueToday`)
+                    const dueToday = document.getElementById(`${projectPage.getAttribute('id')}DueToday`)
 
-                    if(Project.tasksDueToday(page.getAttribute('id')) === 0) {
+                    if(Project.tasksDueToday(projectPage.getAttribute('id')) === 0) {
                         
                         dueToday.style.visibility = 'hidden'
                     
                     } else {
 
                     dueToday.style.visibility = 'visible'
-                    dueToday.textContent = `${Project.tasksDueToday(page.getAttribute('id'))}`
+                    dueToday.textContent = `${Project.tasksDueToday(projectPage.getAttribute('id'))}`
                     
                 }
-            
-            } else {
-
-            Task.addDate(task.date)
-            Task.addTask(task.date, row.getAttribute('id'))
-            
-            let dateIndex = Task.getDateArrayIndex(task.date)
-
-            if(list.children.length < 2) {
-                
-                list.appendChild(row)
-            
-            } else {
-            
-                list.insertBefore(row, list.children[dateIndex+=1])
-            }
-        
+    
         }
-
-            if(task.priority === 'Urgent') {
-                row.classList.add('urgent')
-                row.classList.remove('medium')
-                row.classList.remove('low')
-            } else if(task.priority === 'Medium') {
-                row.classList.add('medium')
-                row.classList.remove('urgent')
-                row.classList.remove('low')
-            } else {
-                row.classList.add('low')
-                row.classList.remove('urgent')
-                row.classList.remove('medium')
-            }
-            
-
-            list.style.display = 'table'
-            taskButton.style.display = 'flex'
-
-            UI.handleCheck(row)
-            UI.handleEdit(page, row)
-            taskCreation.style.display = 'none'
-            selected = null
-            
-           }}
-        })
-    }
 
     static checkDate(task) {
         
         const todayPageList = document.getElementById('todayPageList')
         const weekPageList = document.getElementById('weekPageList')
+        const homePageList = document.getElementById('homePageList')
+        const home = document.querySelector('.home')
         
-        let date = parseISO(task.lastElementChild.previousElementSibling.textContent)
+        let date = task.lastElementChild.previousElementSibling.textContent
+        let parsedDate = parseISO(task.lastElementChild.previousElementSibling.textContent)
         let dayOfWeek = getDay(new Date())
+
+        if(home.classList.contains('activeButton')) {
         
-        if(isToday(date)) {
+            if(homePageList.children.length < 2) {
+            
+            homePageList.appendChild(task)
+            homePageList.style.display = 'table'
+            
+            } else {
+
+            let dateIndex = Task.getDateArrayIndex(date)
+            console.log(dateIndex)
+            
+            homePageList.insertBefore(task, Array.from(homePageList.children)[dateIndex+=1])
+
+        }
+    
+        } else if(isToday(parsedDate)) {
 
             todayPageList.appendChild(task)
-            todayPageList.style.display = 'table'
-        
-        } else if(isThisWeek(date, {weekStartsOn: dayOfWeek})) {
 
+        } else if(isThisWeek(parsedDate, {weekStartsOn: dayOfWeek})) {
+
+            if(weekPageList.children.length < 2) {
+            
             weekPageList.appendChild(task)
-            weekPageList.style.display = 'table'
-        
-        }
+            
+            } else {
+            
+            let dateIndex = Task.getDateArrayIndex(date)
+            weekPageList.insertBefore(task, Array.from(weekPageList.children)[dateIndex+=1])
+            
+            }
+            
 
-    }
+        }
+}
 
 static handleCheck(row) {
 
@@ -466,37 +518,32 @@ static handleCheck(row) {
 
 static handleEdit(page, element) { 
     
-    const list = page.querySelector('.list')
     const taskButton = page.querySelector('.taskButton')
+    const taskCreation = document.querySelector('.taskCreation')
     
     element.addEventListener('click', (e) => {
 
-        const taskCreation = page.querySelector('.taskCreation')
-        const titleInput = page.querySelector('.titleInput')
-        titleInput.setAttribute('value', `${element.getElementsByTagName('td')[0].textContent}`)
-
     if(e.target.classList.contains('edit')) {
 
-        const thing = e.target.parentElement.parentElement.parentElement.parentElement
+        const titleInput = document.querySelector('.titleInput')
+        const descriptionInput = document.querySelector('.descriptionInput')
+        const dateInput = document.querySelector('.dateInput')
+        const priorityInput = document.querySelector('.priorityInput')
+        const list = e.target.parentElement.parentElement.parentElement
+                
+                selected = e.target.parentElement.parentElement.getAttribute('id')
+                list.style.display = 'none' 
+                taskButton.style.display = 'none'
+                taskCreation.style.display = 'flex'
 
-        if(thing.classList.contains('todayPage') || thing.classList.contains('weekPage')) {
-
-            selected = e.target.parentElement.parentElement.getAttribute('id')
-            list.style.display = 'none'        
-            taskButton.style.display = 'none'
-            taskCreation.style.display = 'flex'
-
-            page.appendChild(taskCreation)
+                titleInput.value = element.firstElementChild.textContent
+                descriptionInput.value = element.firstElementChild.nextElementSibling.textContent
+                dateInput.value = element.lastElementChild.previousElementSibling.textContent
+                priorityInput.selectedIndex = 0
         
-        } else {
-
-        selected = e.target.parentElement.parentElement.getAttribute('id')
-        list.style.display = 'none'        
-        taskButton.style.display = 'none'
-        taskCreation.style.display = 'flex'
         
-        }
-    }})}
+        } 
+    })}
 
 
 static handleDelete(list) {
@@ -661,6 +708,7 @@ static handleProjectPage() {
     const home = document.querySelector('.home')
     const today = document.querySelector('.today')
     const week = document.querySelector('.week')
+    const taskCreation = document.querySelector('.taskCreation')
 
     sideBar.addEventListener('click', (e) => {
 
@@ -688,6 +736,8 @@ static handleProjectPage() {
                     projectList.style.display = 'none'
                 }
 
+                projectPage.appendChild(taskCreation)
+
             } else if(e.target.classList.contains('dueToday')) {
 
                 const projectContainer = document.getElementById(`${e.target.previousElementSibling.textContent}`)
@@ -706,6 +756,8 @@ static handleProjectPage() {
                     projectList.style.display = 'none'
                 }
 
+                projectPage.appendChild(taskCreation)
+
             } else {
                 
                 const projectContainer = document.getElementById(`${e.target.textContent}`)
@@ -723,6 +775,8 @@ static handleProjectPage() {
                 } else if (projectList.children.length < 2) {
                     projectList.style.display = 'none'
                 }
+
+                projectPage.appendChild(taskCreation)
 
             }
 
