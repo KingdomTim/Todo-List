@@ -104,7 +104,7 @@ class UI {
                 const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
 
                 const tasks = document.querySelectorAll('.task')
-                tasks.forEach((task) => UI.checkDate(task))
+                tasks.forEach((task) => UI.sortDates(task))
                 
                 if(homePageList.children.length > 1) {
                     homePageList.style.display = 'table'
@@ -147,16 +147,12 @@ class UI {
                 const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
 
                 const tasks = document.querySelectorAll('.task')
-                tasks.forEach((task) => UI.checkDate(task))
-
-                if(todayPageList.children.length < 2) {
-                    todayPageList.style.display = 'none'
-                } else {
-                    todayPageList.style.display = 'table'
-                }
+                tasks.forEach((task) => UI.sortDates(task))
 
                 todayPage.appendChild(taskCreation)
                 taskCreation.style.display = 'none'
+
+                UI.checkList(todayPageList)
             }
         })
     }
@@ -188,10 +184,12 @@ class UI {
                 const projectContainers = document.querySelectorAll('.projectContainer').forEach((projectContainer) => projectContainer.classList.remove('activeButton'))
 
                 const tasks = document.querySelectorAll('.task')
-                tasks.forEach((task) => UI.checkDate(task))
+                tasks.forEach((task) => UI.sortDates(task))
 
                 weekPage.appendChild(taskCreation)
                 taskCreation.style.display = 'none'
+            
+                UI.checkList(weekPageList)
             }
         })
     }
@@ -299,7 +297,7 @@ class UI {
                                             Task.addTask(task.date, selectedTask.getAttribute('id'))
 
                                             list.removeChild(selectedTask)
-                                            UI.checkDate(selectedTask)
+                                            UI.sortDates(selectedTask)
                                 } else {
 
                                     Project.editDate(page.getAttribute('id'), Array.from(list.children).indexOf(selectedTask), task.date)
@@ -342,6 +340,10 @@ class UI {
                                 }
 
                                 selected = null
+
+
+                                UI.checkList(list)
+
             } else {
 
                 const row = document.createElement('tr')
@@ -370,7 +372,7 @@ class UI {
 
                 Task.addDate(task.date)
                 Task.addTask(task.date, row.getAttribute('id'))
-                UI.checkDate(row)
+                UI.sortDates(row)
             
                 }
 
@@ -416,11 +418,12 @@ class UI {
                 if(projectList.children.length < 2) {
                 
                     projectList.appendChild(task)
+                    task.style.display = 'table-row'
                 
                 } else {
                 
                     projectList.insertBefore(task, projectList.children[dateIndex+=1])
-                
+                    task.style.display = 'table-row'
                 }
 
                     const dueToday = document.getElementById(`${projectPage.getAttribute('id')}DueToday`)
@@ -438,7 +441,7 @@ class UI {
     
         }
 
-    static checkDate(task) {
+    static sortDates(task) {
         
         const todayPageList = document.getElementById('todayPageList')
         const weekPageList = document.getElementById('weekPageList')
@@ -482,7 +485,7 @@ class UI {
     
             }
 
-            UI.checkToday()
+            UI.sortTodayTasks()
 
         } else if(week.classList.contains('activeButton')) {
 
@@ -498,20 +501,20 @@ class UI {
     
             }
 
-            UI.checkWeek()
+            UI.sortWeekTasks()
     
         
             }
     }   
     
-    static checkToday() {
+    static sortTodayTasks() {
         
         const todayPageList = document.getElementById('todayPageList')
         
         const tasks = document.querySelectorAll('.task').forEach((task) => {
 
         let parsedDate = parseISO(task.lastElementChild.previousElementSibling.textContent)
-    
+        
         if(isToday(parsedDate)) {
             
             task.style.display = 'table-row'
@@ -525,18 +528,9 @@ class UI {
 
     })
 
-    if(Array.from(todayPageList.children).some((x) => x.style.display === 'table-row')) {
-        
-        todayPageList.style.display = 'table'
+}
 
-    } else {
-        
-        todayPageList.style.display = 'none'
-    }
-
-    }
-
-    static checkWeek() {
+    static sortWeekTasks() {
         
         const weekPageList = document.getElementById('weekPageList')
         
@@ -557,17 +551,9 @@ class UI {
 
 
     })
+    
 
-    if(Array.from(weekPageList.children).some((x) => x.style.display === 'table-row')) {
-        
-        weekPageList.style.display = 'table'
-
-    } else {
-        
-        weekPageList.style.display = 'none'
-    }
-
-    }
+}
 
 static handleCheck(row) {
 
@@ -609,7 +595,6 @@ static handleEdit(page, element) {
         const list = e.target.parentElement.parentElement.parentElement
                 
                 selected = e.target.parentElement.parentElement.getAttribute('id')
-                list.style.display = 'none' 
                 taskButton.style.display = 'none'
                 taskCreation.style.display = 'flex'
 
@@ -618,12 +603,13 @@ static handleEdit(page, element) {
                 dateInput.value = element.lastElementChild.previousElementSibling.textContent
                 priorityInput.selectedIndex = 0
         
-        
         } 
     })}
 
 
 static handleDelete(list) {
+
+    const taskCreation = document.querySelector('.taskCreation')
 
     list.addEventListener('click', (e) => {
 
@@ -632,6 +618,8 @@ static handleDelete(list) {
             let page = e.target.parentElement.parentElement.parentElement.parentElement
             let date = e.target.parentElement.previousElementSibling.textContent
             let row = e.target.parentElement.parentElement
+
+            const taskButton = page.querySelector('.taskButton')
         
             if(!row.classList.contains('task')) {
 
@@ -652,22 +640,44 @@ static handleDelete(list) {
             }    
                 
                 row.remove()
+                taskCreation.style.display = 'none'
+                taskButton.style.display = 'flex'
+                UI.checkList(list)
 
             } else {
 
                 Task.deleteDate(date)
                 Task.deleteTask(date)
                 row.remove()
+                taskCreation.style.display = 'none'
+                UI.checkList(list)
+
+                if(page.classList.contains('homePage')) {
+                    taskButton.style.display = 'flex'
+                }
 
             }
     }
-    
-    
-    if(list.childNodes.length < 2) {
+
+
+
+})
+
+}
+
+static checkList(list) {
+   
+     let array = Array.from(list.children).filter((x) => x.style.display === 'table-row')
+            
+    if(array.length > 0) {
+        
+        list.style.display = 'table'
+
+    } else {
+        
         list.style.display = 'none'
     }
 
-})
 
 }
 
@@ -868,7 +878,7 @@ static handleProjectPage() {
             const taskCreations = document.querySelectorAll('.taskCreation').forEach((taskCreation) => taskCreation.style.display = 'none')
             const taskButtons = document.querySelectorAll('.taskButton').forEach((taskButton) => taskButton.style.display = 'flex')
             
-} 
+    } 
 })
     
 }
